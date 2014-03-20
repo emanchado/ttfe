@@ -15,8 +15,26 @@
                                               line
                                               (inc i)))))]
             (concat (repeat (-  (count line) (count crunched-numbers))
-                                              nil)
-                                      (reverse crunched-numbers))))
+                            nil)
+                    (reverse crunched-numbers))))
+        board))
+
+(defn move-left [board]
+  (mapv (fn [line]
+          (let [numbers (filter #(not= % nil) line)
+                crunched-numbers (loop [acc [] line numbers i 0]
+                                   (if (>= i (count numbers))
+                                     acc
+                                     (if (= (nth line i) (nth line (inc i) nil))
+                                       (recur (conj acc (* 2 (nth line i)))
+                                              line
+                                              (+ i 2))
+                                       (recur (conj acc (nth line i))
+                                              line
+                                              (inc i)))))]
+            (concat crunched-numbers
+                    (repeat (-  (count line) (count crunched-numbers))
+                            nil))))
         board))
 
 (defn main [screen-type]
