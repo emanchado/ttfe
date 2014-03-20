@@ -37,6 +37,18 @@
                             nil))))
         board))
 
+(defn rotate-cw [board]
+  (apply mapv (fn [a b c d] [a b c d]) (reverse board)))
+
+(defn rotate-ccw [board]
+  (reverse (apply mapv (fn [a b c d] [a b c d]) board)))
+
+(defn move-up [board]
+  (rotate-ccw (move-right (rotate-cw board))))
+
+(defn move-down [board]
+  (rotate-ccw (move-left (rotate-cw board))))
+
 (defn main [screen-type]
   (let [screen (s/get-screen screen-type)]
     (s/in-screen screen
