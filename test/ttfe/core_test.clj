@@ -1,5 +1,5 @@
-(ns clj2048.core-test
-  (:require [clj2048.core :refer :all]
+(ns ttfe.core-test
+  (:require [ttfe.core :refer :all]
             [clojure.test :refer :all]))
 
 (deftest test-move-right

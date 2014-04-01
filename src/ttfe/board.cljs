@@ -1,5 +1,4 @@
-(ns clj2048.core
-  (:require [lanterna.screen :as s]))
+(ns ttfe.board)
 
 (defn move-right [board]
   (mapv (fn [line]
@@ -48,19 +47,3 @@
 
 (defn move-down [board]
   (rotate-ccw (move-left (rotate-cw board))))
-
-(defn main [screen-type]
-  (let [screen (s/get-screen screen-type)]
-    (s/in-screen screen
-                 (s/put-string screen 0 0 "Clojure 2048!")
-                 (s/put-string screen 0 1 "Press any key to exit...")
-                 (s/redraw screen)
-                 (s/get-key-blocking screen))))
-
-(defn -main [& args]
-  (let [args (set args)
-        screen-type (cond
-                      (args ":swing") :swing
-                      (args ":text")  :text
-                      :else           :auto)]
-    (main screen-type)))
