@@ -1,100 +1,101 @@
 (ns ttfe.core-test
-  (:require [ttfe.core :refer :all]
-            [clojure.test :refer :all]))
+  (:require [ttfe.board :refer [move-right move-left move-up move-down]]
+            [purnam.test :refer [toSatisfy]])
+  (:use-macros [purnam.test :only [describe it is is-not]]))
 
-(deftest test-move-right
-  (testing "Can move a single number"
-    (is (= (move-right [[nil nil  4  nil]
+(describe test-move-right
+  (it "Can move a single number"
+    (is (move-right [[nil nil  4  nil]
                         [nil nil nil nil]
                         [nil nil nil nil]
                         [nil nil nil nil]])
            [[nil nil nil  4 ]
             [nil nil nil nil]
             [nil nil nil nil]
-            [nil nil nil nil]])))
+            [nil nil nil nil]]))
 
-  (testing "Can move two numbers in different rows"
-    (is (= (move-right [[nil nil  4  nil]
+  (it "Can move two numbers in different rows"
+    (is (move-right [[nil nil  4  nil]
                         [nil nil nil nil]
                         [nil  2  nil nil]
                         [nil nil nil nil]])
            [[nil nil nil  4 ]
             [nil nil nil nil]
             [nil nil nil  2 ]
-            [nil nil nil nil]])))
+            [nil nil nil nil]]))
 
-  (testing "Can combine simple numbers"
-    (is (= (move-right [[nil nil  2   2 ]
+  (it "Can combine simple numbers"
+    (is (move-right [[nil nil  2   2 ]
                         [nil nil nil nil]
                         [nil nil nil nil]
                         [nil nil nil nil]])
            [[nil nil nil  4 ]
             [nil nil nil nil]
             [nil nil nil nil]
-            [nil nil nil nil]])))
+            [nil nil nil nil]]))
 
-  (testing "Can combine chains of numbers"
-    (is (= (move-right [[ 4   4   2   2 ]
+  (it "Can combine chains of numbers"
+    (is (move-right [[ 4   4   2   2 ]
                         [nil nil nil nil]
                         [nil nil nil nil]
                         [nil nil nil nil]])
            [[nil nil  8   4 ]
             [nil nil nil nil]
             [nil nil nil nil]
-            [nil nil nil nil]])))
+            [nil nil nil nil]]))
 
-  (testing "Can combine numbers that aren't adjacent"
-    (is (= (move-right [[nil  2  nil  2 ]
+  (it "Can combine numbers that aren't adjacent"
+    (is (move-right [[nil  2  nil  2 ]
                         [nil nil nil nil]
                         [nil nil nil nil]
                         [nil nil nil nil]])
            [[nil nil nil  4 ]
             [nil nil nil nil]
             [nil nil nil nil]
-            [nil nil nil nil]])))
+            [nil nil nil nil]]))
 
-  (testing "Number combination starts the right way"
-    (is (= (move-right [[ 2   2  nil  2 ]
+  (it "Number combination starts the right way"
+    (is (move-right [[ 2   2  nil  2 ]
                         [nil nil nil nil]
                         [nil nil nil nil]
                         [nil nil nil nil]])
            [[nil nil  2   4 ]
             [nil nil nil nil]
             [nil nil nil nil]
-            [nil nil nil nil]]))))
+            [nil nil nil nil]])))
 
 
-(deftest test-move-left
-  (testing "Can move two numbers in different rows"
-    (is (= (move-left [[nil nil  4  nil]
+(describe test-move-left
+  (it "Can move two numbers in different rows"
+    (is (move-left [[nil nil  4  nil]
                        [nil nil nil nil]
                        [nil  2  nil nil]
                        [nil nil nil nil]])
            [[ 4  nil nil nil]
             [nil nil nil nil]
             [ 2  nil nil nil]
-            [nil nil nil nil]]))))
+            [nil nil nil nil]])))
 
 
-(deftest test-move-up
-  (testing "Can move two numbers in different rows"
-    (is (= (move-up [[nil nil nil nil]
+(describe test-move-up
+  (it "Can move two numbers in different rows"
+    (is (move-up [[nil nil nil nil]
                      [nil nil  4  nil]
                      [nil  2  nil nil]
                      [nil nil nil nil]])
            [[nil  2   4  nil]
             [nil nil nil nil]
             [nil nil nil nil]
-            [nil nil nil nil]]))))
+            [nil nil nil nil]])))
 
 
-(deftest test-move-down
-  (testing "Can move two numbers in different rows"
-    (is (= (move-down [[nil nil nil nil]
+(describe test-move-down
+  (it "Can move two numbers in different rows"
+    (is (move-down [[nil nil nil nil]
                        [nil nil  4  nil]
                        [nil  2  nil nil]
                        [nil nil nil nil]])
            [[nil nil nil nil]
             [nil nil nil nil]
             [nil nil nil nil]
-            [nil  2   4  nil]]))))
+            [nil  2   4  nil]])))

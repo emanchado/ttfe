@@ -36,6 +36,7 @@
                #js {:id "tiles" :className "tile-container"}
                cell-divs)))))
 
-(om/root tiles-view
-         app-state
-         {:target (. js/document (getElementById "tiles"))})
+(defn init []
+  (om/root tiles-view
+           app-state
+           {:target (. js/document (getElementById "tiles"))}))

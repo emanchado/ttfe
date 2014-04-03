@@ -3,3 +3,5 @@
 target/
 out/
 ttfe.js
+node_modules/
+karma-test.js
