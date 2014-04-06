@@ -47,3 +47,20 @@
 
 (defn move-down [board]
   (rotate-ccw (move-left (rotate-cw board))))
+
+(defn find-empty-tiles [board]
+  (reduce (fn [acc row-n]
+            (let [row (nth board row-n)]
+              (concat acc (reduce (fn [col-acc col-n]
+                                    (let [tile (nth row col-n)]
+                                      (if (nil? tile)
+                                        (conj col-acc [row-n col-n])
+                                        col-acc)))
+                                  '()
+                                  (range (count row))))))
+          '()
+          (range (count board))))
+
+(defn add-tile [board]
+  (let [[rand-row rand-col] (rand-nth (find-empty-tiles board))]
+    (update-in board [rand-row rand-col] (fn [_] 2))))

@@ -1,6 +1,8 @@
 (ns ttfe.core
   (:require [om.core :as om :include-macros true]
-            [om.dom :as dom :include-macros true]))
+            [om.dom :as dom :include-macros true]
+            [ttfe.board :refer [move-left move-right move-up move-down
+                                add-tile]]))
 
 (enable-console-print!)
 
@@ -10,6 +12,8 @@
             [nil nil nil nil]
             [nil  8  nil nil]
             [nil nil nil nil]]}))
+
+(def move-fns [move-up move-right move-down move-left])
 
 (defn divs-for-board [board]
   (reduce (fn [row-acc row-n]
@@ -37,6 +41,16 @@
                cell-divs)))))
 
 (defn init []
-  (om/root tiles-view
-           app-state
-           {:target (. js/document (getElementById "tiles"))}))
+  (let [input-manager (js/KeyboardInputManager.)]
+    (.on input-manager
+         "move"
+         (fn [direction]
+           (let [move-fn (nth move-fns direction)]
+             (swap! app-state
+                    (fn [state]
+                      (let [board (:board state)]
+                        (update-in state [:board] (fn [b]
+                                                    (add-tile (move-fn b))))))))))
+    (om/root tiles-view
+             app-state
+             {:target (. js/document (getElementById "tiles"))})))
