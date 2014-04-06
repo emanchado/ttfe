@@ -13,9 +13,9 @@
                                        (recur (conj acc (nth line i))
                                               line
                                               (inc i)))))]
-            (concat (repeat (-  (count line) (count crunched-numbers))
-                            nil)
-                    (reverse crunched-numbers))))
+            (vec (concat (repeat (-  (count line) (count crunched-numbers))
+                                 nil)
+                         (reverse crunched-numbers)))))
         board))
 
 (defn move-left [board]
@@ -31,16 +31,16 @@
                                        (recur (conj acc (nth line i))
                                               line
                                               (inc i)))))]
-            (concat crunched-numbers
-                    (repeat (-  (count line) (count crunched-numbers))
-                            nil))))
+            (vec (concat crunched-numbers
+                         (repeat (-  (count line) (count crunched-numbers))
+                                 nil)))))
         board))
 
 (defn rotate-cw [board]
-  (apply mapv (fn [a b c d] [a b c d]) (reverse board)))
+  (apply mapv (fn [a b c d] [a b c d]) (vec (reverse board))))
 
 (defn rotate-ccw [board]
-  (reverse (apply mapv (fn [a b c d] [a b c d]) board)))
+  (vec (reverse (apply mapv (fn [a b c d] [a b c d]) board))))
 
 (defn move-up [board]
   (rotate-ccw (move-right (rotate-cw board))))
