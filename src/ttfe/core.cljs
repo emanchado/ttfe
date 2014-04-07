@@ -2,7 +2,7 @@
   (:require [om.core :as om :include-macros true]
             [om.dom :as dom :include-macros true]
             [ttfe.board :refer [move-left move-right move-up move-down
-                                add-tile]]))
+                                add-tile movements-left?]]))
 
 (enable-console-print!)
 
@@ -45,12 +45,32 @@
     (.on input-manager
          "move"
          (fn [direction]
-           (let [move-fn (nth move-fns direction)]
-             (swap! app-state
-                    (fn [state]
-                      (let [board (:board state)]
-                        (update-in state [:board] (fn [b]
-                                                    (add-tile (move-fn b))))))))))
+           (let [move-fn (nth move-fns direction)
+                 new-state (swap! app-state
+                                  (fn [state]
+                                    (let [board (:board state)
+                                          moved-board (move-fn board)]
+                                      (if (not= board moved-board)
+                                        (update-in state [:board]
+                                                   (fn [b]
+                                                     (add-tile moved-board)))
+                                        state))))]
+             (when (contains? (set (flatten (:board new-state))) 2048)
+               (let [msg-cont (. js/document (querySelector ".game-message"))]
+                 (.add (.-classList msg-cont) "game-won")
+                 (-> msg-cont
+                     (.getElementsByTagName "p")
+                     (.item 0)
+                     .-textContent
+                     (set! "You win!"))))
+             (when-not (movements-left? (:board new-state))
+               (let [msg-cont (. js/document (querySelector ".game-message"))]
+                 (.add (.-classList msg-cont) "game-over")
+                 (-> msg-cont
+                     (.getElementsByTagName "p")
+                     (.item 0)
+                     .-textContent
+                     (set! "Game over!")))))))
     (om/root tiles-view
              app-state
              {:target (. js/document (getElementById "tiles"))})))
