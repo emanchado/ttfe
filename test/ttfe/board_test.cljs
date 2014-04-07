@@ -1,4 +1,4 @@
-(ns ttfe.core-test
+(ns ttfe.board-test
   (:require [ttfe.board :refer [move-right move-left move-up move-down]]
             [purnam.test :refer [toSatisfy]])
   (:use-macros [purnam.test :only [describe it is is-not]]))
