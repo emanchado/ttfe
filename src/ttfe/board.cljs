@@ -64,3 +64,10 @@
 (defn add-tile [board]
   (let [[rand-row rand-col] (rand-nth (find-empty-tiles board))]
     (update-in board [rand-row rand-col] (fn [_] 2))))
+
+(defn movements-left? [board]
+  (let [board-moved-left (move-left board)
+        board-moved-right (move-right board)
+        board-moved-up (move-up board)
+        board-moved-down (move-down board)]
+    (not= board-moved-left board-moved-right board-moved-up board-moved-down)))
