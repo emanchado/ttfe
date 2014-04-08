@@ -62,8 +62,9 @@
           (range (count board))))
 
 (defn add-tile [board]
-  (let [[rand-row rand-col] (rand-nth (find-empty-tiles board))]
-    (update-in board [rand-row rand-col] (fn [_] 2))))
+  (let [[rand-row rand-col] (rand-nth (find-empty-tiles board))
+        new-tile-value (rand-nth '(2 2 2 2 2 2 2 2 2 4))]
+    (update-in board [rand-row rand-col] (fn [_] new-tile-value))))
 
 (defn movements-left? [board]
   (let [board-moved-left (move-left board)
