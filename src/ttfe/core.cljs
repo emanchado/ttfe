@@ -24,7 +24,7 @@
                                 (if (nil? cell)
                                   acc
                                   (conj acc
-                                        (dom/div #js {:className (str "tile title-" (inc row-n) " tile-position-" (inc col-n) "-" (inc row-n))}
+                                        (dom/div #js {:className (str "tile tile-" cell " tile-position-" (inc col-n) "-" (inc row-n))}
                                                  (dom/div #js {:className "tile-inner"} cell))))))
                             []
                             (range (count row))))))
