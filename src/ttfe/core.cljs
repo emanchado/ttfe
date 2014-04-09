@@ -6,11 +6,14 @@
 
 (enable-console-print!)
 
+(defn new-game []
+  {:board (new-board)
+   :already-won false
+   :paused false})
+
 (def app-state
   (atom
-   {:board (new-board)
-    :already-won false
-    :paused false}))
+   (new-game)))
 
 (def move-fns [move-up move-right move-down move-left])
 
@@ -83,7 +86,7 @@
              (.remove (.-classList msg-cont) "game-over")
              (swap! app-state
                     (fn [state]
-                      (update-in state [:board] (fn [b] (new-board))))))))
+                      (new-game))))))
     (.on input-manager
          "keepPlaying"
          (fn []
