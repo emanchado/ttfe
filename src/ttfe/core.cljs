@@ -11,7 +11,9 @@
    {:board [[ 4   4   2   2 ]
             [nil nil nil nil]
             [nil  8  nil nil]
-            [nil nil nil nil]]}))
+            [nil nil nil nil]]
+    :already-won false
+    :paused false}))
 
 (def move-fns [move-up move-right move-down move-left])
 
@@ -42,6 +44,10 @@
 
 (defn end-game [class message]
   (let [msg-cont (. js/document (querySelector ".game-message"))]
+    ; The game could have been won and continued, so let's make sure
+    ; the "game won" mark is not there when the game is lost after
+    ; winning
+    (.remove (.-classList msg-cont) "game-won")
     (.add (.-classList msg-cont) class)
     (-> msg-cont
         (.getElementsByTagName "p")
@@ -54,20 +60,24 @@
     (.on input-manager
          "move"
          (fn [direction]
-           (let [move-fn (nth move-fns direction)
-                 new-state (swap! app-state
-                                  (fn [state]
-                                    (let [board (:board state)
-                                          moved-board (move-fn board)]
-                                      (if (not= board moved-board)
-                                        (update-in state [:board]
-                                                   (fn [b]
-                                                     (add-tile moved-board)))
-                                        state))))]
-             (when (contains? (set (flatten (:board new-state))) 2048)
-               (end-game "game-won" "You win!"))
-             (when-not (movements-left? (:board new-state))
-               (end-game "game-over" "Game over!")))))
+           (if-not (:paused @app-state)
+             (let [move-fn (nth move-fns direction)]
+               (swap! app-state
+                      (fn [state]
+                        (let [board (:board state)
+                              moved-board (move-fn board)]
+                          (if (not= board moved-board)
+                            (update-in state [:board]
+                                       (fn [b]
+                                         (add-tile moved-board)))
+                            state))))
+               (when (and (contains? (set (flatten (:board @app-state))) 2048)
+                          (not (:already-won @app-state)))
+                 (swap! app-state (fn [state] (merge state {:already-won true
+                                                           :paused true})))
+                 (end-game "game-won" "You win!"))
+               (when-not (movements-left? (:board @app-state))
+                 (end-game "game-over" "Game over!"))))))
     (.on input-manager
          "restart"
          (fn []
@@ -81,6 +91,14 @@
                                                    [nil nil nil nil]
                                                    [nil nil nil nil]
                                                    [nil nil nil nil]]))))))))
+    (.on input-manager
+         "keepPlaying"
+         (fn []
+           (swap! app-state (fn [state]
+                              (update-in state [:paused] (fn [_] false))))
+           (let [msg-cont (. js/document (querySelector ".game-message"))]
+             (.remove (.-classList msg-cont) "game-won")
+             (.remove (.-classList msg-cont) "game-over"))))
     (om/root tiles-view
              app-state
              {:target (. js/document (getElementById "tiles"))})))
