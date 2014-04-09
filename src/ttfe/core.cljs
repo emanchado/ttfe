@@ -2,16 +2,13 @@
   (:require [om.core :as om :include-macros true]
             [om.dom :as dom :include-macros true]
             [ttfe.board :refer [move-left move-right move-up move-down
-                                add-tile movements-left?]]))
+                                new-board add-tile movements-left?]]))
 
 (enable-console-print!)
 
 (def app-state
   (atom
-   {:board [[ 4   4   2   2 ]
-            [nil nil nil nil]
-            [nil  8  nil nil]
-            [nil nil nil nil]]
+   {:board (new-board)
     :already-won false
     :paused false}))
 
@@ -86,11 +83,7 @@
              (.remove (.-classList msg-cont) "game-over")
              (swap! app-state
                     (fn [state]
-                      (update-in state [:board]
-                                 (fn [b] (add-tile [[nil nil nil nil]
-                                                   [nil nil nil nil]
-                                                   [nil nil nil nil]
-                                                   [nil nil nil nil]]))))))))
+                      (update-in state [:board] (fn [b] (new-board))))))))
     (.on input-manager
          "keepPlaying"
          (fn []

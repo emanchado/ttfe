@@ -1,5 +1,29 @@
 (ns ttfe.board)
 
+(defn -find-empty-tiles [board]
+  (reduce (fn [acc row-n]
+            (let [row (nth board row-n)]
+              (concat acc (reduce (fn [col-acc col-n]
+                                    (let [tile (nth row col-n)]
+                                      (if (nil? tile)
+                                        (conj col-acc [row-n col-n])
+                                        col-acc)))
+                                  '()
+                                  (range (count row))))))
+          '()
+          (range (count board))))
+
+(defn add-tile [board]
+  (let [[rand-row rand-col] (rand-nth (-find-empty-tiles board))
+        new-tile-value (rand-nth '(2 2 2 2 2 2 2 2 2 4))]
+    (update-in board [rand-row rand-col] (fn [_] new-tile-value))))
+
+(defn new-board []
+  (add-tile [[nil nil nil nil]
+             [nil nil nil nil]
+             [nil nil nil nil]
+             [nil nil nil nil]]))
+
 (defn move-right [board]
   (mapv (fn [line]
           (let [numbers (filter #(not= % nil) line)
@@ -47,24 +71,6 @@
 
 (defn move-down [board]
   (-rotate-ccw (move-left (-rotate-cw board))))
-
-(defn -find-empty-tiles [board]
-  (reduce (fn [acc row-n]
-            (let [row (nth board row-n)]
-              (concat acc (reduce (fn [col-acc col-n]
-                                    (let [tile (nth row col-n)]
-                                      (if (nil? tile)
-                                        (conj col-acc [row-n col-n])
-                                        col-acc)))
-                                  '()
-                                  (range (count row))))))
-          '()
-          (range (count board))))
-
-(defn add-tile [board]
-  (let [[rand-row rand-col] (rand-nth (-find-empty-tiles board))
-        new-tile-value (rand-nth '(2 2 2 2 2 2 2 2 2 4))]
-    (update-in board [rand-row rand-col] (fn [_] new-tile-value))))
 
 (defn movements-left? [board]
   (let [board-moved-left (move-left board)
