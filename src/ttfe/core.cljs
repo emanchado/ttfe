@@ -40,6 +40,15 @@
                #js {:id "tiles" :className "tile-container"}
                cell-divs)))))
 
+(defn end-game [class message]
+  (let [msg-cont (. js/document (querySelector ".game-message"))]
+    (.add (.-classList msg-cont) class)
+    (-> msg-cont
+        (.getElementsByTagName "p")
+        (.item 0)
+        .-textContent
+        (set! message))))
+
 (defn init []
   (let [input-manager (js/KeyboardInputManager.)]
     (.on input-manager
@@ -56,21 +65,22 @@
                                                      (add-tile moved-board)))
                                         state))))]
              (when (contains? (set (flatten (:board new-state))) 2048)
-               (let [msg-cont (. js/document (querySelector ".game-message"))]
-                 (.add (.-classList msg-cont) "game-won")
-                 (-> msg-cont
-                     (.getElementsByTagName "p")
-                     (.item 0)
-                     .-textContent
-                     (set! "You win!"))))
+               (end-game "game-won" "You win!"))
              (when-not (movements-left? (:board new-state))
-               (let [msg-cont (. js/document (querySelector ".game-message"))]
-                 (.add (.-classList msg-cont) "game-over")
-                 (-> msg-cont
-                     (.getElementsByTagName "p")
-                     (.item 0)
-                     .-textContent
-                     (set! "Game over!")))))))
+               (end-game "game-over" "Game over!")))))
+    (.on input-manager
+         "restart"
+         (fn []
+           (let [msg-cont (. js/document (querySelector ".game-message"))]
+             (.remove (.-classList msg-cont) "game-won")
+             (.remove (.-classList msg-cont) "game-over")
+             (swap! app-state
+                    (fn [state]
+                      (update-in state [:board]
+                                 (fn [b] (add-tile [[nil nil nil nil]
+                                                   [nil nil nil nil]
+                                                   [nil nil nil nil]
+                                                   [nil nil nil nil]]))))))))
     (om/root tiles-view
              app-state
              {:target (. js/document (getElementById "tiles"))})))
