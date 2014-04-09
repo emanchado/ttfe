@@ -36,19 +36,19 @@
                                  nil)))))
         board))
 
-(defn rotate-cw [board]
+(defn -rotate-cw [board]
   (apply mapv (fn [a b c d] [a b c d]) (vec (reverse board))))
 
-(defn rotate-ccw [board]
+(defn -rotate-ccw [board]
   (vec (reverse (apply mapv (fn [a b c d] [a b c d]) board))))
 
 (defn move-up [board]
-  (rotate-ccw (move-right (rotate-cw board))))
+  (-rotate-ccw (move-right (-rotate-cw board))))
 
 (defn move-down [board]
-  (rotate-ccw (move-left (rotate-cw board))))
+  (-rotate-ccw (move-left (-rotate-cw board))))
 
-(defn find-empty-tiles [board]
+(defn -find-empty-tiles [board]
   (reduce (fn [acc row-n]
             (let [row (nth board row-n)]
               (concat acc (reduce (fn [col-acc col-n]
@@ -62,7 +62,7 @@
           (range (count board))))
 
 (defn add-tile [board]
-  (let [[rand-row rand-col] (rand-nth (find-empty-tiles board))
+  (let [[rand-row rand-col] (rand-nth (-find-empty-tiles board))
         new-tile-value (rand-nth '(2 2 2 2 2 2 2 2 2 4))]
     (update-in board [rand-row rand-col] (fn [_] new-tile-value))))
 
