@@ -27,15 +27,14 @@
 (defn move-right [board]
   (mapv (fn [line]
           (let [numbers (filter #(not= % nil) line)
-                crunched-numbers (loop [acc [] line (reverse numbers) i 0]
+                rnumbers (reverse numbers)
+                crunched-numbers (loop [acc [] i 0]
                                    (if (>= i (count numbers))
                                      acc
-                                     (if (= (nth line i) (nth line (inc i) nil))
-                                       (recur (conj acc (* 2 (nth line i)))
-                                              line
+                                     (if (= (nth rnumbers i) (nth rnumbers (inc i) nil))
+                                       (recur (conj acc (* 2 (nth rnumbers i)))
                                               (+ i 2))
-                                       (recur (conj acc (nth line i))
-                                              line
+                                       (recur (conj acc (nth rnumbers i))
                                               (inc i)))))]
             (vec (concat (repeat (-  (count line) (count crunched-numbers))
                                  nil)
@@ -45,15 +44,13 @@
 (defn move-left [board]
   (mapv (fn [line]
           (let [numbers (filter #(not= % nil) line)
-                crunched-numbers (loop [acc [] line numbers i 0]
+                crunched-numbers (loop [acc [], i 0]
                                    (if (>= i (count numbers))
                                      acc
-                                     (if (= (nth line i) (nth line (inc i) nil))
-                                       (recur (conj acc (* 2 (nth line i)))
-                                              line
+                                     (if (= (nth numbers i) (nth numbers (inc i) nil))
+                                       (recur (conj acc (* 2 (nth numbers i)))
                                               (+ i 2))
-                                       (recur (conj acc (nth line i))
-                                              line
+                                       (recur (conj acc (nth numbers i))
                                               (inc i)))))]
             (vec (concat crunched-numbers
                          (repeat (-  (count line) (count crunched-numbers))
