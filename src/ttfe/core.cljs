@@ -67,9 +67,7 @@
                         (let [board (:board state)
                               moved-board (move-fn board)]
                           (if (not= board moved-board)
-                            (update-in state [:board]
-                                       (fn [b]
-                                         (add-tile moved-board)))
+                            (assoc-in state [:board] (add-tile moved-board))
                             state))))
                (when (and (contains? (set (flatten (:board @app-state))) 2048)
                           (not (:already-won @app-state)))
@@ -90,8 +88,7 @@
     (.on input-manager
          "keepPlaying"
          (fn []
-           (swap! app-state (fn [state]
-                              (update-in state [:paused] (fn [_] false))))
+           (swap! app-state (fn [state] (assoc-in state [:paused] false)))
            (let [msg-cont (. js/document (querySelector ".game-message"))]
              (.remove (.-classList msg-cont) "game-won")
              (.remove (.-classList msg-cont) "game-over"))))

@@ -16,7 +16,7 @@
 (defn add-tile [board]
   (let [[rand-row rand-col] (rand-nth (-find-empty-tiles board))
         new-tile-value (rand-nth '(2 2 2 2 2 2 2 2 2 4))]
-    (update-in board [rand-row rand-col] (fn [_] new-tile-value))))
+    (assoc-in board [rand-row rand-col] new-tile-value)))
 
 (defn new-board []
   (add-tile [[nil nil nil nil]
