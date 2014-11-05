@@ -1,6 +1,5 @@
 .lein-failures
 .lein-repl-history
 target/
-out/
 node_modules/
 karma-test.js
